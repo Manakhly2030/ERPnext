@@ -351,9 +351,12 @@ class SubcontractingReceipt(SubcontractingController):
 				supplied_items_details[item.name] = {}
 
 				for supplied_item in supplied_items:
+					if supplied_item.rm_item_code not in supplied_items_details[item.name]:
+						supplied_items_details[item.name][supplied_item.rm_item_code] = 0.0
+
 					supplied_items_details[item.name][
 						supplied_item.rm_item_code
-					] = supplied_item.available_qty
+					] += supplied_item.available_qty
 		else:
 			for item in self.get("supplied_items"):
 				item.available_qty_for_consumption = supplied_items_details.get(item.reference_name, {}).get(
@@ -783,7 +786,11 @@ def make_purchase_receipt(source_name, target_doc=None, save=False, submit=False
 				"postprocess": update_item,
 				"condition": lambda doc: doc.name in po_sr_item_dict,
 			},
-			"Purchase Taxes and Charges": {"doctype": "Purchase Taxes and Charges", "reset_value": True},
+			"Purchase Taxes and Charges": {
+				"doctype": "Purchase Taxes and Charges",
+				"reset_value": True,
+				"condition": lambda doc: not doc.is_tax_withholding_account,
+			},
 		},
 		postprocess=post_process,
 	)
