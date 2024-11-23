@@ -561,7 +561,7 @@
   {
    "fieldname": "item_group",
    "fieldtype": "Link",
-   "hidden": 1,
+   "hidden": 0,
    "label": "Item Group",
    "oldfieldname": "item_group",
    "oldfieldtype": "Link",
